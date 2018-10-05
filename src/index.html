@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <?!= HtmlService.createHtmlOutputFromFile("css").getContent(); ?>
+</head>
+
+<body>
+    <div class="container" id="container">
+        <div class="alert alert-success alert-dismissible fade show" v-show="succeeded" role="alert">
+            売上を登録しました
+            <button type="button" class="close" aria-label="Close" @click="closeSuccessDialog">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div id="form" class="mb-4">
+            <h2>商品選択</h2>
+            <div class="row mb-3">
+                <div class="col">
+                    <select class="form-control form-control-lg" name="item" v-model="selectedItemIndex">
+                        <option v-for="(item, index) in items" v-bind:value="index">{{ item[0] }}: {{ item[1] }}円 </option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="customer-info">
+                <h2>購入者情報</h2>
+                <h3>性別</h3>
+                <div class="row">
+                    <div id="sex-radio" class="btn-group btn-group-toggle col-12">
+                        <input type="radio" name="sex" id="sex1" autocomplete="off" v-model="checkedSex" value="男性">
+                        <label for="sex1" class="btn btn-outline-secondary btn-lg" style="width: 50%;">
+                            男性
+                        </label>
+                        <input type="radio" name="sex" id="sex2" autocomplete="off" v-model="checkedSex" value="女性">
+                        <label for="sex2" class="btn btn-outline-secondary btn-lg" style="width: 50%;">
+                            女性
+                        </label>
+                    </div>
+                </div>
+
+                <h3>年代</h3>
+                <div class="row">
+                    <div id="age-radio" class="btn-group btn-group-toggle col-12">
+                        <input type="radio" name="age" id="age1" autocomplete="off" v-model="checkedAge" value="小学生">
+                        <label for="age1" class="btn btn-outline-secondary btn-lg" style="width: 25%;">
+                            小学生
+                        </label>
+                        <input type="radio" name="age" id="age2" autocomplete="off" v-model="checkedAge" value="子供">
+                        <label for="age2" class="btn btn-outline-secondary btn-lg" style="width: 25%;">
+                            中高生
+                        </label>
+                        <input type="radio" name="age" id="age3" autocomplete="off" v-model="checkedAge" value="大学生">
+                        <label for="age3" class="btn btn-outline-secondary btn-lg" style="width: 25%;">
+                            大学生
+                        </label>
+                        <input type="radio" name="age" id="age4" autocomplete="off" v-model="checkedAge" value="大人">
+                        <label for="age4" class="btn btn-outline-secondary btn-lg" style="width: 25%;">
+                            大人
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-12">
+                    <button type="button" class="btn btn-primary btn-block" @click="add">追加</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="basket" class="mb-5">
+            <h2>追加済み商品</h2>
+            <div class="row">
+                <div class="col-12">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">商品</th>
+                                <th scope="col">値段</th>
+                                <th scope="col">性別</th>
+                                <th scope="col">年代</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(item, index) in basket">
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.price }}円</td>
+                                <td>{{ item.sex }}</td>
+                                <td>{{ item.age }}</td>
+                                <td><button type="button" class="btn btn-dark" @click="remove(index)">削除</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <footer class="fixed-bottom">
+            <div class="row">
+                <div class="col-8">
+                    合計: {{ total }}円
+                </div>
+                <div class="col-4">
+                    <button type="button" class="btn btn-primary btn-lg btn-block" @click="apply" v-bind:disabled="isButtonDisabled">{{ btnText }}</button>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+    <?!= HtmlService.createHtmlOutputFromFile("js").getContent(); ?>
+</body>
+
+</html>

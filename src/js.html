@@ -1,0 +1,84 @@
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+<script>
+    $(function() {
+        $('#mode input[type=radio]').change( function() {
+            console.log(this.value);
+        });
+    })
+    new Vue({
+        el: "#container",
+        data: {
+            items: [],
+            basket: [],
+            selectedItemIndex: 0,
+            checkedSex: "",
+            checkedAge: "",
+            total: 0,
+            btnText: "登録",
+            isButtonDisabled: false,
+            succeeded: false
+        },
+        created: function() {
+            google.script.run
+                .withSuccessHandler(this.updateData)
+                .withFailureHandler(function(arg){
+                    console.log(arg);
+                })
+                .getItems();
+        },
+        methods: {
+            updateData: function(items) {
+                this.items = items;
+            },
+            add: function() {
+                basketItem = {
+                    name: this.items[this.selectedItemIndex][0],
+                    price: this.items[this.selectedItemIndex][1],
+                    sex: this.checkedSex,
+                    age: this.checkedAge
+                };
+                this.basket.push(basketItem);
+                this.resetForm();
+                this.calcTotal();
+            },
+            remove(index) {
+                this.basket.splice(index, 1);
+                this.calcTotal();
+            },
+            calcTotal: function() {
+                this.total = 0;
+                for (var item of this.basket) {
+                    this.total += item.price;
+                }
+            },
+            resetForm: function() {
+                this.selectedItemIndex = 0;
+                this.checkedSex = "";
+                this.checkedAge = "";
+            },
+            apply: function() {
+                self = this;
+                this.btnText = "送信中";
+                this.isButtonDisabled = true;
+                google.script.run
+                    .withSuccessHandler(function(arg){
+                        self.basket = [];
+                        self.btnText = "登録";
+                        self.isButtonDisabled = false;
+                        self.total = 0;
+                        self.succeeded = true;
+                    })
+                    .withFailureHandler(function(arg){
+                        alert("登録に失敗しました")
+                        self.btnText = "登録";
+                        self.isButtonDisabled = false;
+                        console.log(arg);
+                    })
+                    .regist(this.basket);
+            },
+            closeSuccessDialog: function() {
+                this.succeeded = false;
+            }
+        }
+    });
+</script>
